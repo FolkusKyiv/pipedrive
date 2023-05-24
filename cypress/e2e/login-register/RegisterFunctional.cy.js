@@ -1,17 +1,8 @@
 import faker from 'faker';
 describe('Functional Tests for registration', () => {
 
-  beforeEach(() => {
-    cy.visit('https://www.pipedrive.com/uk')
-    const viewportWidth = 1280
-    const viewportHeight = 720
-    cy.viewport(viewportWidth, viewportHeight)
-    cy.get("#onetrust-accept-btn-handler").should("be.visible")
-    cy.get("#onetrust-accept-btn-handler").click()
-    cy.get('.onscroll-fade').click()
-    cy.get(".header-register-button").should("be.visible").click()
-    cy.get(".puco-spacing--bottom-xl-m .puco-checkbox-container").as("TOSandPN")
-  })
+  const viewportWidth = 1280
+  const viewportHeight = 720
   const noEmail= "Email is required"
   const incorrectEmail = "Please add a valid email address"
   const registerURL = "https://www.pipedrive.com/en/register"
@@ -26,9 +17,25 @@ describe('Functional Tests for registration', () => {
   const h3LineHeight = "44px"
   const h3FontSize = "34px"
 
+
+    //Before each to  navigate to Register Page and click necessary option of TOS and PN
+
+  beforeEach(() => {
+        cy.visit('https://www.pipedrive.com/uk')
+        cy.viewport(viewportWidth, viewportHeight)
+        cy.get("#onetrust-accept-btn-handler").should("be.visible")
+        cy.get("#onetrust-accept-btn-handler").click()
+        cy.get('.onscroll-fade').click()
+        cy.get(".header-register-button").should("be.visible").click()
+        cy.get(".puco-spacing--bottom-xl-m .puco-checkbox-container").as("TOSandPN")
+    })
+
+    //We try to register without TOS and PN agreement
+
   it(  "Submit with no TOS and PN agreement", () =>{
 
-    //Try to click register without submitting
+    //Try to click register without agreeing to TOS and PN
+
     cy.get(".puco-button--primary").click()
     cy.get("@TOSandPN").should("contain", "This option is required")
         .should("be.visible")
@@ -41,9 +48,10 @@ describe('Functional Tests for registration', () => {
         })
   })
 
+    //Sending no email, trying to register
+
   it("Submit no email", () => {
 
-    //Sending no email, trying to register
     cy.get("@TOSandPN").children().eq(1).click()
     cy.get(".puco-button--primary").click()
     cy.get(".puco-input--prefix").should("have.css","border", "1px solid rgb(255, 85, 80)")
@@ -59,9 +67,10 @@ describe('Functional Tests for registration', () => {
     cy.url().should("equal", registerURL)
   })
 
+    //Sending an invalid email
+
   it("Submit invalid email", () => {
 
-    //Sending and invalid email
     cy.get("@TOSandPN").children().eq(1).click()
     cy.get('.puco-input-label').type("abcd")
     cy.get(".puco-button--primary").click()
@@ -77,9 +86,9 @@ describe('Functional Tests for registration', () => {
     cy.url().should("equal", registerURL)
   })
 
+    //Trying to register with an existing account
   it("Submit existing email",  () => {
 
-    //Trying to register with an existing account
     cy.get("@TOSandPN").children().eq(1).click()
     cy.get('.puco-input-label').type("abdulah@ukr.net")
     cy.get(".puco-button--primary").click()
@@ -96,15 +105,19 @@ describe('Functional Tests for registration', () => {
     cy.url().should("equal", registerURL)
   })
 
+    //Registering using a fake valid email
   it("Register via a valid email", () => {
 
-      //Registering using a fake valid email
+      let validEmail
+      validEmail = faker.internet.email() //Using faker lib to create valid non-existent email
 
-      let validEmail;
-      validEmail = faker.internet.email()
-        cy.get("@TOSandPN").children().eq(1).click()
-        cy.get('.puco-input-label').type(validEmail)
+      cy.get("@TOSandPN").children().eq(1).click()
+      cy.get('.puco-input-label').type(validEmail)
+      cy.screenshot('ValidEmailInput')
+      // I don't want to create an invalid users on your PROD. A simple URL check will suffice here
+
+      // cy.get(".puco-button--primary").click()
+
+      //URL check and so on...
     })
-
-
 })

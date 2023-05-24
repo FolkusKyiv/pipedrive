@@ -2,7 +2,7 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
 name: Node.js CI
-
+# What event triggers the check
 on:
   push:
     branches: [ "master" ]
@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [18.x]  #here, multiple instances of Node.js can be taken into account, I've used only 18
 
     steps:
       - uses: actions/checkout@v3
@@ -26,10 +26,17 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - run: npm ci
-      - run: npm run build --if-present
+      
+      # Check for Docker container is possible to build and run
+      
       - name: Run Docker Compose
         run: docker-compose up --build
+        
+        #checking that neccessary files are present
+        
       - name: Check Files
         run: |
           ls README.md
-          ls cypress/e2e/login-register/*.spec.js | wc -l
+          ls cypress/e2e/login-register/*.spec.js | wc -l 
+          
+     # so on...

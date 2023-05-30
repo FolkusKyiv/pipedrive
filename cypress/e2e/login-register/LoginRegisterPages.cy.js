@@ -2,7 +2,7 @@ describe('Brief check on Login and register pages', () => {
     const viewportWidth = 1280
     const viewportHeight = 720
 
-    //Before eaach -- open UA landing page, accept cookies
+    //Before each -- open UA landing page, accept cookies
 
     beforeEach( () => {
     cy.visit('https://www.pipedrive.com/uk')

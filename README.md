@@ -44,12 +44,13 @@ npm install faker --save-dev
 npx cypress open
 ```
 to launch the tests
+
 Alternatively, you can also do ```npx cypress run -b chrome``` to launch headless execution of the tests in chrome
 
 # Note 3
 For the sake of demonstration, the checks assume that everything is OK and according to design doc. In reality, it is not always the case. 
 
-Import of css constants from design doc can be used, for examaple, by
+Import of css constants from design doc can be used, for example, by
 constants.js
 ``` 
 
